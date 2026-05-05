@@ -3,6 +3,8 @@ import os
 
 from dotenv import load_dotenv
 from google import genai
+from google.genai import errors
+from google.genai import types
 
 def main():
     load_dotenv()
@@ -19,10 +21,22 @@ def main():
 
     client = genai.Client(api_key=api_key)
     
-    response = client.models.generate_content(
-        model='gemini-2.5-flash',
-        contents=args.user_prompt
-    )
+    messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
+
+    try:
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=messages
+        )
+    except errors.ServerError as e:
+        match (e.code):
+            case 503:
+                print("Cant seem to reach the service (503), better luck next time...")
+            case _:
+                print(f"Got a {e.code} about:\n{e.message}")
+        #if e.code = 503:
+        #    print("Cant seem to reach the service (503), better luck next time...")
+        #else
     
     if response.usage_metadata is None:
         raise RuntimeError("No usage metadata returned from Gemini API")
