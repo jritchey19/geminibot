@@ -17,6 +17,7 @@ def main():
         description="Gemini Chatbot"
     )
     parser.add_argument("user_prompt", type=str, help="User prompt to ask the Chatbot.")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output.")
     args = parser.parse_args()
 
     client = genai.Client(api_key=api_key)
@@ -43,11 +44,13 @@ def main():
     
     prompt_tokens = response.usage_metadata.prompt_token_count
     response_tokens = response.usage_metadata.candidates_token_count
-    
-    print(f"User prompt: {args.user_prompt}")
-    print(f"Prompt tokens: {prompt_tokens}")
-    print(f"Response tokens: {response_tokens}")
-    print("Response:")
+   
+    if args.verbose:
+        print(f"User prompt: {args.user_prompt}")
+        print(f"Prompt tokens: {prompt_tokens}")
+        print(f"Response tokens: {response_tokens}")
+        print("Response:")
+        print("<--------------------------------------------------->")
     print(response.text or "No response text returned...")
     
 if __name__ == '__main__':
