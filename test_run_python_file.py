@@ -1,0 +1,21 @@
+from functions.run_python_file import run_code_file
+
+if __name__ == '__main__':
+    print("testing run_code_file func with -> calculator, 'main.py'")
+    results = run_code_file("calculator", "main.py" )
+    print(f"Results:\n{results}")
+    print("testing run_code_file func with -> calculator, 'main.py', ['3 + 5']")
+    results = run_code_file("calculator", "main.py", ["3 + 5"] )
+    print(f"Results:\n{results}")
+    print("testing run_code_file func with -> calculator, 'tests.py'")
+    results = run_code_file("calculator", "tests.py" )
+    print(f"Results:\n{results}")
+    print("testing run_code_file func with -> calculator, '../main.py'")
+    results = run_code_file("calculator", "../main.py" )
+    print(f"Results:\n{results}")
+    print("testing run_code_file func with -> calculator, 'nonexistent.py'")
+    results = run_code_file("calculator", "nonexistent.py" )
+    print(f"Results:\n{results}")
+    print("testing run_code_file func with -> calculator, 'lorem.txt'")
+    results = run_code_file("calculator", "lorem.txt" )
+    print(f"Results:\n{results}")
