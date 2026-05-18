@@ -1,6 +1,26 @@
 import os
 import subprocess
 
+from google.genai import types
+
+schema_run_code_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs a given python file with optional arguments. Returns results.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to file to be ran by agent.",
+            ),
+            "args": types.Schema(
+                type=types.Type.STRING,
+                description="Arguments for the python file if needed. Should be as a list of strings.",
+            ),
+        },
+    ),
+)
+
 def run_code_file(working_directory: str, file_path: str, args: list[str] = None ) -> None:
     """
     Runs Code written in a file.

@@ -1,7 +1,9 @@
 import argparse
 import os
 
+from functions.call_function import available_functions
 from dotenv import load_dotenv
+from functions.prompts import system_prompt
 from google import genai
 from google.genai import errors
 from google.genai import types
@@ -27,8 +29,13 @@ def main():
     try:
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=messages
+            contents=messages,
+            config=types.GenerateContentConfig(
+                tools=[available_functions],
+                system_instruction=system_prompt
+            )
         )
+
     except errors.ServerError as e:
         match (e.code):
             case 503:
@@ -51,7 +58,14 @@ def main():
         print(f"Response tokens: {response_tokens}")
         print("Response:")
         print("<--------------------------------------------------->")
-    print(response.text or "No response text returned...")
+
+    if response.function_calls:
+        for function_call in response.function_calls:
+            if function_call:
+                print(f"Calling function: {function_call.name}({function_call.args})")
+
+    else:
+        print(response.text or "No response text returned...")
     
 if __name__ == '__main__':
     main()
