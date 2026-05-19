@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from functions.call_function import available_functions
+from functions.call_function import available_functions, call_function
 from dotenv import load_dotenv
 from functions.prompts import system_prompt
 from google import genai
@@ -62,7 +62,15 @@ def main():
     if response.function_calls:
         for function_call in response.function_calls:
             if function_call:
-                print(f"Calling function: {function_call.name}({function_call.args})")
+                function_call_result = call_function(function_call)
+                if not function_call_result.parts:
+                    raise Exception(f"Function call {function_call} returned empty parts list...")
+                if not function_call_result.parts[0].function_response:
+                    raise Exception(f"Function call {function_call} has an empty function_response...")
+                if not function_call_result.parts[0].function_response.response:
+                    raise Exception(f"Function call {function_call} has a empty responce in its function_response...")
+                if args.verbose:
+                    print(f"-> {function_call_result.parts[0].function_response.response}")
 
     else:
         print(response.text or "No response text returned...")
