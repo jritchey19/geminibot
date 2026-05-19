@@ -1,1 +1,3 @@
 MAX_CHARS = 10000
+MAX_ITER = 20
+MODEL='gemini-2.5-flash'
